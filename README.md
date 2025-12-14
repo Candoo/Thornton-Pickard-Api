@@ -17,10 +17,10 @@ This is the backend API service for the Thornton Pickard camera catalog applicat
 
 This API works with:
 
-- **[my-modern-react-setup](https://github.com/Candoo/my-modern-react-setup)** - React frontend
-- **[Pickard-Index](https://github.com/Candoo/Pickard-Index)** - Full-stack deployment setup
+- **[Thornton-Pickard-Ui](https://github.com/Candoo/Thornton-Pickard-Ui)** - React frontend
+- **[Thornton-Pickard-Deployment](https://github.com/Candoo/Thornton-Pickard-Deployment)** - Full-stack deployment setup
 
-**⚡ Quick Start:** For the easiest setup of the entire application, use the [Pickard-Index deployment repository](https://github.com/Candoo/Pickard-Index).
+**⚡ Quick Start:** For the easiest setup of the entire application, use the [Thornton Pickard deployment repository](https://github.com/Candoo/Thornton-Pickard-Deployment).
 
 ## ✨ Features
 
@@ -63,8 +63,8 @@ This API works with:
 2. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/Candoo/thornton-pickard-api.git
-   cd thornton-pickard-api
+   git clone https://github.com/Candoo/Thornton-Pickard-Api.git
+   cd Thornton-Pickard-Api
    ```
 
 3. **Install dependencies:**
@@ -143,7 +143,7 @@ docker-compose up -d --build
 
 ### Full-Stack Deployment
 
-For the complete application (frontend + backend + database), use the [Pickard-Index deployment repository](https://github.com/Candoo/Pickard-Index).
+For the complete application (frontend + backend + database), use the [Pickard-Index deployment repository](https://github.com/Candoo/Thornton-Pickard-Deployment).
 
 ## 📚 API Endpoints
 
@@ -600,7 +600,7 @@ lsof -i :8080
 swag init -g cmd/api/main.go
 
 # Ensure docs package is imported in main.go
-import _ "github.com/Candoo/thornton-pickard-api/docs"
+import _ "github.com/Candoo/Thornton-Pickard-Api/docs"
 ```
 
 ### CORS Errors
@@ -637,8 +637,8 @@ MIT License - see LICENSE file for details.
 
 ## 🔗 Related Links
 
-- [Frontend Repository](https://github.com/Candoo/my-modern-react-setup)
-- [Deployment Repository](https://github.com/Candoo/Pickard-Index)
+- [Frontend Repository](https://github.com/Candoo/Thornton-Pickard-Ui)
+- [Deployment Repository](https://github.com/Candoo/Thornton-Pickard-Deployment)
 - [Gin Framework](https://gin-gonic.com/)
 - [GORM Documentation](https://gorm.io/)
 - [Swagger/OpenAPI](https://swagger.io/)
