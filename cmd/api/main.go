@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,22 @@ import (
 	"github.com/Candoo/thornton-pickard-api/internal/handlers"
 	"github.com/Candoo/thornton-pickard-api/internal/middleware"
 )
+
+// Define a default service name as fallback
+const DefaultServiceName = "Unknown API Service"
+
+// Global variable to hold the configured service name
+var ServiceName string
+
+// HealthCheck responds with a 200 OK and status message.
+// This is used by client probes to determine API readiness.
+func HealthCheck(c *gin.Context) {
+    c.JSON(http.StatusOK, gin.H{
+        "status": "up", 
+        "service": ServiceName,
+		"message": "API is running",
+    })
+}
 
 // @title Thornton Pickard Camera API
 // @version 2.0
@@ -49,6 +66,13 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	// Get service name from environment or use default
+	ServiceName = os.Getenv("APP_SERVICE_NAME")
+    if ServiceName == "" {
+        ServiceName = DefaultServiceName
+        log.Printf("Warning: APP_SERVICE_NAME not set, using default: %s", ServiceName)
+    }
+
 	// Create router
 	r := gin.Default()
 
@@ -66,6 +90,8 @@ func main() {
 	// API v1 routes
 	v1 := r.Group("/api/v1")
 	{
+        v1.GET("/status", HealthCheck) 
+
 		// Public auth routes
 		auth := v1.Group("/auth")
 		{
