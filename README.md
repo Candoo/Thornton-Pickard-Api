@@ -143,7 +143,7 @@ docker-compose up -d --build
 
 ### Full-Stack Deployment
 
-For the complete application (frontend + backend + database), use the [Pickard-Index deployment repository](https://github.com/Candoo/Thornton-Pickard-Deployment).
+For the complete application (frontend + backend + database), use the [Thornton Pickard deployment repository](https://github.com/Candoo/Thornton-Pickard-Deployment).
 
 ## 📚 API Endpoints
 
