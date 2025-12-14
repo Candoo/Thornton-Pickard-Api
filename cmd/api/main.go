@@ -29,7 +29,7 @@ func HealthCheck(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
         "status": "up", 
         "service": ServiceName,
-		"message": "API is running",
+		"message": "API is connected",
     })
 }
 
