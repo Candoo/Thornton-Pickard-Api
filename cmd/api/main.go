@@ -26,11 +26,11 @@ var ServiceName string
 // HealthCheck responds with a 200 OK and status message.
 // This is used by client probes to determine API readiness.
 func HealthCheck(c *gin.Context) {
-    c.JSON(http.StatusOK, gin.H{
-        "status": "up", 
-        "service": ServiceName,
+	c.JSON(http.StatusOK, gin.H{
+		"status": "up", 
+		"service": ServiceName,
 		"message": "API is connected",
-    })
+	})
 }
 
 // @title Thornton Pickard Camera API
@@ -68,10 +68,10 @@ func main() {
 
 	// Get service name from environment or use default
 	ServiceName = os.Getenv("APP_SERVICE_NAME")
-    if ServiceName == "" {
-        ServiceName = DefaultServiceName
-        log.Printf("Warning: APP_SERVICE_NAME not set, using default: %s", ServiceName)
-    }
+	if ServiceName == "" {
+		ServiceName = DefaultServiceName
+		log.Printf("Warning: APP_SERVICE_NAME not set, using default: %s", ServiceName)
+	}
 
 	// Create router
 	r := gin.Default()
@@ -87,10 +87,13 @@ func main() {
 		c.JSON(200, gin.H{"status": "ok", "version": "2.0"})
 	})
 
+	// Initialize handlers
+	cameraHandler := handlers.NewCameraHandler(db)
+
 	// API v1 routes
 	v1 := r.Group("/api/v1")
 	{
-        v1.GET("/status", HealthCheck) 
+		v1.GET("/status", HealthCheck) 
 
 		// Public auth routes
 		auth := v1.Group("/auth")
@@ -103,18 +106,19 @@ func main() {
 		// Public camera routes (read-only)
 		cameras := v1.Group("/cameras")
 		{
-			cameras.GET("", handlers.GetCameras(db))
-			cameras.GET("/:id", handlers.GetCamera(db))
-			cameras.GET("/search", handlers.SearchCameras(db))
+			cameras.GET("", cameraHandler.GetCameras)
+			cameras.GET("/:id", cameraHandler.GetCamera)
 		}
 
 		// Protected camera routes (require auth)
 		camerasProtected := v1.Group("/cameras")
 		camerasProtected.Use(middleware.AuthRequired())
+
 		{
-			camerasProtected.POST("", handlers.CreateCamera(db))
-			camerasProtected.PUT("/:id", handlers.UpdateCamera(db))
-			camerasProtected.DELETE("/:id", middleware.AdminRequired(), handlers.DeleteCamera(db))
+
+			camerasProtected.POST("", cameraHandler.CreateCamera)
+			camerasProtected.PUT("/:id", cameraHandler.UpdateCamera)
+			camerasProtected.DELETE("/:id", middleware.AdminRequired(), cameraHandler.DeleteCamera)
 		}
 
 		// Ephemera routes

@@ -1,9 +1,10 @@
 package models
 
 import (
-	"time"
-
-	"gorm.io/gorm"
+    "time"
+    "fmt" 
+    "encoding/json"
+    "gorm.io/gorm"
 )
 
 type Camera struct {
@@ -44,4 +45,32 @@ type CameraResponse struct {
 	EstimatedValueRange string    `json:"estimated_value_range,omitempty"`
 	CreatedAt           time.Time `json:"created_at"`
 	UpdatedAt           time.Time `json:"updated_at"`
+}
+
+// ToCameraResponse converts a Camera model to the client-friendly CameraResponse model.
+func (c *Camera) ToCameraResponse() CameraResponse {
+    resp := CameraResponse{
+        ID:             c.ID,
+        Name:           c.Name,
+        Manufacturer:   c.Manufacturer,
+        YearIntroduced: c.YearIntroduced,
+        YearDiscontinued: c.YearDiscontinued,
+        Format:         c.Format,
+        Lens:           c.Lens,
+        Shutter:        c.Shutter,
+        Description:    c.Description,
+        Rarity:         c.Rarity,
+        CreatedAt:      c.CreatedAt,
+        UpdatedAt:      c.UpdatedAt,
+    }
+
+    json.Unmarshal([]byte(c.PlateSizes), &resp.PlateSizes)
+    json.Unmarshal([]byte(c.Features), &resp.Features)
+    json.Unmarshal([]byte(c.ImageURLs), &resp.ImageURLs)
+
+    if c.EstimatedValueMin != nil && c.EstimatedValueMax != nil {
+        resp.EstimatedValueRange = fmt.Sprintf("$%.0f - $%.0f", *c.EstimatedValueMin, *c.EstimatedValueMax)
+    }
+    
+    return resp
 }

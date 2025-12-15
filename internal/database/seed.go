@@ -90,47 +90,68 @@ func seedCameras(db *gorm.DB) error {
 		return nil
 	}
 
-	// Try to read from JSON file if it exists
-	if data, err := os.ReadFile("seeds/cameras.json"); err == nil {
+	data, err := os.ReadFile("seeds/cameras.json")
+	if err != nil {
+		log.Printf("Warning: Failed to read cameras.json, falling back to default seed data: %v", err)
+	} else {
 		var cameras []models.Camera
-		if err := json.Unmarshal(data, &cameras); err == nil {
-			if err := db.Create(&cameras).Error; err != nil {
-				return err
-			}
-			log.Printf("✓ Seeded %d cameras from JSON file", len(cameras))
-			return nil
+		if err := json.Unmarshal(data, &cameras); err != nil {
+			log.Fatalf("FATAL JSON UNMARSHAL ERROR: Failed to parse cameras.json: %v", err)
+			return err 
 		}
+
+		if err := db.Create(&cameras).Error; err != nil {
+			log.Fatalf("FATAL GORM SEED ERROR: Failed to create cameras from JSON: %v", err) 
+			return err
+		}
+
+		log.Printf("✓ Seeded %d cameras from JSON file", len(cameras))
+		return nil
 	}
 
 	// Default seed data
 	cameras := []models.Camera{
 		{
-			Name:             "Ruby Reflex",
-			Manufacturer:     "Thornton-Pickard",
-			YearIntroduced:   1909,
-			YearDiscontinued: intPtr(1926),
-			Format:           "Plate",
-			PlateSizes:       `["4x5", "5x7"]`,
-			Lens:             "Various",
-			Shutter:          "Focal Plane",
-			Features:         `["Reflex viewing", "Tilting back", "Rising front"]`,
-			Description:      "Professional reflex camera popular with press photographers",
-			Rarity:           "Uncommon",
+			Name:              "Ruby Reflex",
+			Manufacturer:      "Thornton-Pickard",
+			YearIntroduced:    1909,
+			YearDiscontinued:  intPtr(1926),
+			Format:            "Plate",
+			PlateSizes:        `["4x5", "5x7"]`,
+			Lens:              "Various",
+			Shutter:           "Focal Plane",
+			Features:          `["Reflex viewing", "Tilting back", "Rising front"]`,
+			Description:       "Professional reflex camera popular with press photographers",
+			Rarity:            "Uncommon",
 			EstimatedValueMin: float64Ptr(500),
 			EstimatedValueMax: float64Ptr(800),
 		},
 		{
-			Name:             "Imperial Triple Extension",
-			Manufacturer:     "Thornton-Pickard",
-			YearIntroduced:   1895,
-			Format:           "Plate",
-			PlateSizes:       `["Half-plate", "Whole-plate"]`,
-			Shutter:          "Time Shutter",
-			Features:         `["Triple extension bellows", "Mahogany construction"]`,
-			Description:      "High-quality field camera with extensive movements",
-			Rarity:           "Rare",
+			Name:              "Imperial Triple Extension",
+			Manufacturer:      "Thornton-Pickard",
+			YearIntroduced:    1895,
+			Format:            "Plate",
+			PlateSizes:        `["Half-plate", "Whole-plate"]`,
+			Shutter:           "Time Shutter",
+			Features:          `["Triple extension bellows", "Mahogany construction"]`,
+			Description:       "High-quality field camera with extensive movements",
+			Rarity:            "Rare",
 			EstimatedValueMin: float64Ptr(300),
 			EstimatedValueMax: float64Ptr(600),
+		},
+		{
+			Name:              "Time & Instantaneous",
+			Manufacturer:      "Thornton-Pickard",
+			YearIntroduced:    1892,
+			Format:            "Plate",
+			PlateSizes:        `["Quarter-plate", "Half-plate"]`,
+			Lens:              "",
+			Shutter:           "T&I Shutter",
+			Features:          `["Mahogany body", "Brass fittings"]`,
+			Description:       "Early hand camera with distinctive T&I shutter",
+			Rarity:            "Very Rare",
+			EstimatedValueMin: float64Ptr(200),
+			EstimatedValueMax: float64Ptr(400),
 		},
 	}
 

@@ -10,6 +10,7 @@
     "shutter": "Focal Plane",
     "features": "[\"Reflex viewing\", \"Tilting back\", \"Rising front\"]",
     "description": "Professional reflex camera popular with press photographers",
+    "image_urls": "[]",
     "rarity": "Uncommon",
     "estimated_value_min": 500,
     "estimated_value_max": 800
@@ -20,9 +21,11 @@
     "year_introduced": 1895,
     "format": "Plate",
     "plate_sizes": "[\"Half-plate\", \"Whole-plate\"]",
+    "lens": "",
     "shutter": "Time Shutter",
     "features": "[\"Triple extension bellows\", \"Mahogany construction\"]",
     "description": "High-quality field camera with extensive movements",
+    "image_urls": "[]",
     "rarity": "Rare",
     "estimated_value_min": 300,
     "estimated_value_max": 600
@@ -33,9 +36,11 @@
     "year_introduced": 1892,
     "format": "Plate",
     "plate_sizes": "[\"Quarter-plate\", \"Half-plate\"]",
+    "lens": "",
     "shutter": "T&I Shutter",
     "features": "[\"Mahogany body\", \"Brass fittings\"]",
     "description": "Early hand camera with distinctive T&I shutter",
+    "image_urls": "[]",
     "rarity": "Very Rare",
     "estimated_value_min": 200,
     "estimated_value_max": 400
