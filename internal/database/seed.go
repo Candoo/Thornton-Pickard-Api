@@ -42,6 +42,8 @@ func seedAdminUser(db *gorm.DB) error {
 	admin := models.User{
 		Email: "admin@thorntonpickard.com",
 		Role:  "admin",
+		FirstName: "System", 
+        LastName:  "Admin",
 	}
 
 	if err := admin.HashPassword("admin123"); err != nil {

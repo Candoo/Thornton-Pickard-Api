@@ -26,6 +26,8 @@ func TestRegister(t *testing.T) {
 	reqBody := models.RegisterRequest{
 		Email:    "test@example.com",
 		Password: "password123",
+		FirstName: "Test",
+        LastName:  "User",
 	}
 	jsonData, _ := json.Marshal(reqBody)
 
@@ -59,6 +61,8 @@ func TestRegisterDuplicateEmail(t *testing.T) {
 	reqBody := models.RegisterRequest{
 		Email:    "existing@example.com",
 		Password: "password123",
+		FirstName: "Duplicate",
+        LastName:  "User",
 	}
 	jsonData, _ := json.Marshal(reqBody)
 

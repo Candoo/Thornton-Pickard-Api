@@ -9,14 +9,17 @@ import (
 	"github.com/Candoo/thornton-pickard-api/internal/services"
 )
 
-// Register creates a new user account
+// Register godoc
 // @Summary Register a new user
-// @Description Create a new user account
+// @Description Register a new user and return a JWT token
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param request body models.RegisterRequest true "Registration details"
+// @Param user body models.RegisterRequest true "Registration details including email, password, first name, and last name"
 // @Success 201 {object} models.AuthResponse
+// @Failure 400 {object} map[string]string "error: Invalid request data"
+// @Failure 409 {object} map[string]string "error: User already exists"
+// @Failure 500 {object} map[string]string "error: Could not create user"
 // @Router /auth/register [post]
 func Register(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -28,6 +31,7 @@ func Register(db *gorm.DB) gin.HandlerFunc {
 
 		// Check if user already exists
 		var existingUser models.User
+		// NOTE: You are not checking for deleted users here, which is standard practice for uniqueness.
 		if err := db.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
 			c.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
 			return
@@ -36,7 +40,9 @@ func Register(db *gorm.DB) gin.HandlerFunc {
 		// Create user
 		user := models.User{
 			Email: req.Email,
-			Role:  "user",
+			FirstName: req.FirstName, // ADDED: Required for passing tests/proper user creation
+			LastName:  req.LastName,  // ADDED: Required for passing tests/proper user creation
+			Role: "user",
 		}
 
 		if err := user.HashPassword(req.Password); err != nil {
@@ -71,6 +77,8 @@ func Register(db *gorm.DB) gin.HandlerFunc {
 // @Produce json
 // @Param request body models.LoginRequest true "Login credentials"
 // @Success 200 {object} models.AuthResponse
+// @Failure 400 {object} map[string]string "error: Invalid credentials"
+// @Failure 401 {object} map[string]string "error: Invalid credentials"
 // @Router /auth/login [post]
 func Login(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -113,7 +121,8 @@ func Login(db *gorm.DB) gin.HandlerFunc {
 // @Tags auth
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} models.User
+// @Success 200 {object} models.UserResponse // UPDATED: Returns the safe UserResponse
+// @Failure 404 {object} map[string]string "error: User not found"
 // @Router /auth/profile [get]
 func GetProfile(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -125,6 +134,7 @@ func GetProfile(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, user)
+		// Security Improvement: Return only the safe UserResponse object
+		c.JSON(http.StatusOK, user.ToUserResponse()) 
 	}
 }

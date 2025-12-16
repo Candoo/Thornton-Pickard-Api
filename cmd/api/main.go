@@ -89,6 +89,7 @@ func main() {
 
 	// Initialize handlers
 	cameraHandler := handlers.NewCameraHandler(db)
+	userHandler := handlers.NewUserHandler(db)
 
 	// API v1 routes
 	v1 := r.Group("/api/v1")
@@ -115,10 +116,16 @@ func main() {
 		camerasProtected.Use(middleware.AuthRequired())
 
 		{
-
 			camerasProtected.POST("", cameraHandler.CreateCamera)
 			camerasProtected.PUT("/:id", cameraHandler.UpdateCamera)
 			camerasProtected.DELETE("/:id", middleware.AdminRequired(), cameraHandler.DeleteCamera)
+		}
+
+		// User Routes (Protected: Requires Auth/Admin)
+		users := v1.Group("/users")
+		users.Use(middleware.AuthRequired()) // Protect the whole group
+		{
+			users.GET("", middleware.AdminRequired(), userHandler.GetUsers) 
 		}
 
 		// Ephemera routes
